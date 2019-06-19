@@ -45,7 +45,7 @@ public class FilesManager {
             }
             case "--list": {
                 try {
-                    return index.getWatchedDirectories();
+                    return String.join("\n", index.getWatchedDirectories());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -56,9 +56,11 @@ public class FilesManager {
                 break;
             }
             case "--reindex": {
-                String[] dirsToAdd = null;
+                String[] dirsToAdd = {};
                 try {
-                    dirsToAdd = index.getWatchedDirectories().split("\n");
+
+                    dirsToAdd = index.getWatchedDirectories();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -72,6 +74,18 @@ public class FilesManager {
         }
 
         return "";
+    }
+
+    public String[] getWatchedList() throws IOException {
+        return index.getWatchedDirectories();
+    }
+
+    public void deleteFileFromIndex(Path file) {
+        try {
+            index.deleteByField("path", file.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addToIndex(String dirPath) {

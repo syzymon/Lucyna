@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import pl.edu.mimuw.kd209238.indexer.DocumentExtractor;
 import pl.edu.mimuw.kd209238.indexer.FilesManager;
 import pl.edu.mimuw.kd209238.indexer.IndexManager;
+import pl.edu.mimuw.kd209238.indexer.Watcher;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -81,5 +82,13 @@ public class DocumentExtractorTest {
         assertEquals(fm.performOperation("--list", null), "");
     }
 
+    @Test
+    void testWatching() throws IOException {
+        final String pathToAdd = "/home/syzymon/Pulpit/java/PO_2/Lucyna/src/test/resources/easy_tests";
+        fm.performOperation("--add", pathToAdd);
 
+        Watcher w = new Watcher(fm);
+        w.initialize();
+        w.processEvents();
+    }
 }

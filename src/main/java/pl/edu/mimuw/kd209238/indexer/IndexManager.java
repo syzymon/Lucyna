@@ -133,8 +133,8 @@ public class IndexManager {
         }
     }
 
-    public String getWatchedDirectories() throws IOException {
-        StringBuilder result = new StringBuilder();
+    public String[] getWatchedDirectories() throws IOException {
+        String[] result;
 
         try (IndexReader reader = DirectoryReader.open(writer)) {
 
@@ -145,17 +145,16 @@ public class IndexManager {
             TopDocs docs = searcher.search(query, Integer.MAX_VALUE);
 
 //            System.out.println(docs.totalHits);
+            result = new String[docs.scoreDocs.length];
+            int idx = 0;
 
             for (ScoreDoc doc : docs.scoreDocs) {
                 Document pathDoc = searcher.doc(doc.doc);
 
-                result.append(pathDoc.get("indexed_path"));
-
-                result.append("\n");
+                result[idx++] = pathDoc.get("indexed_path");
             }
-
         }
 
-        return result.toString();
+        return result;
     }
 }
