@@ -40,16 +40,34 @@ public class DocumentExtractor {
 
         Document doc = new Document();
 
-        doc.add(new TextField("content", content, Field.Store.YES));
+        String lang = detector.detect(content).getLanguage();
+
+//        System.out.println(content + " " + doc.get("lang"));
+        switch (lang) {
+            case "pl":
+                doc.add(new TextField("pl", content, Field.Store.YES));
+                break;
+            case "en":
+                doc.add(new TextField("en", content, Field.Store.YES));
+                break;
+            default:
+                doc.add(new TextField("no_lang", content, Field.Store.YES));
+        }
 
         // TODO: to absolute path??
-        Field pathField = new StringField("path", filePath.toString(), Field.Store.YES);
+        Field pathField = new TextField("path", filePath.toString(), Field.Store.YES);
         doc.add(pathField);
 
         String filename = filePath.getFileName().toString();
-        doc.add(new StringField("filename", filename, Field.Store.YES));
+        doc.add(new TextField("filename", filename, Field.Store.YES));
 
-        doc.add(new StringField("lang", detector.detect(content).getLanguage(), Field.Store.YES));
+        return doc;
+    }
+
+    public Document generatePathDocument(String dirPath) {
+        Document doc = new Document();
+
+        doc.add(new TextField("indexed_path", dirPath, Field.Store.YES));
 
         return doc;
     }

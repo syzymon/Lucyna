@@ -2,6 +2,7 @@ package pl.edu.mimuw.kd209238.indexer;
 
 import org.apache.tika.exception.TikaException;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -16,11 +17,67 @@ public class FilesManager {
         this.index = index;
     }
 
-    public void performOperation(String dirPath, String operationName) {
+    public String performOperation(String operationName, String dirPath) {
         //check if file at dirPath exists, is not indexed etc
-        if (operationName.equals("add"))
-            traverse(Paths.get(dirPath), new AddingVisitor());
-        //map op name to function name and call traverse
+        if (operationName.equals("--rm") || operationName.equals("--add")) {
+            try {
+                dirPath = new File(dirPath).getCanonicalPath();
+            } catch (IOException e) {
+                // TODO exit code 1
+                index.close();
+                System.exit(1);
+            }
+        }
+
+        switch (operationName) {
+            case "--add": {
+                addToIndex(dirPath);
+                break;
+            }
+            case "--rm": {
+                try {
+                    index.deleteAllInDirectory(dirPath);
+                    index.deleteByField("indexed_path", dirPath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "--list": {
+                try {
+                    return index.getWatchedDirectories();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case "--purge": {
+                index.clean();
+                break;
+            }
+            case "--reindex": {
+                String[] dirsToAdd = null;
+                try {
+                    dirsToAdd = index.getWatchedDirectories().split("\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                index.clean();
+
+                for (String toAdd : dirsToAdd) {
+                    addToIndex(toAdd);
+                }
+                break;
+            }
+        }
+
+        return "";
+    }
+
+    private void addToIndex(String dirPath) {
+        traverse(Paths.get(dirPath), new AddingVisitor());
+
+        index.addDocument(extractor.generatePathDocument(dirPath), "indexed_path");
     }
 
     private void traverse(Path path, SimpleFileVisitor<Path> visitor) {
@@ -47,9 +104,9 @@ public class FilesManager {
             //Open file and extract by extractor, get result with all useful information
             //Useful info:
             try {
-                index.addRawDocument(extractor.extract(file));
+                index.addDocument(extractor.extract(file), "path");
             } catch (TikaException e) {
-                //cannot read content so we shouldn't index this file
+                //cannot read content so we ignore this file and continue
                 return FileVisitResult.CONTINUE;
             }
 
