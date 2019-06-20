@@ -43,7 +43,7 @@ public class Watcher {
     }
 
     @SuppressWarnings("unchecked")
-    static <T> WatchEvent<T> cast(WatchEvent<?> event) {
+    private static <T> WatchEvent<T> cast(WatchEvent<?> event) {
         return (WatchEvent<T>) event;
     }
 
@@ -107,8 +107,6 @@ public class Watcher {
                 Path name = ev.context();
                 Path child = dir.resolve(name);
 
-                Path dirPath = (Path)key.watchable();
-                Path fullPath = dir.resolve(name);
 
                 // print out event
                 logger.info("{}: {}", event.kind().name(), child);
@@ -122,21 +120,17 @@ public class Watcher {
                             registerAll(child);
                         }
 
-                        if (Files.isRegularFile(name)) {
+                        if (Files.isRegularFile(child)) {
 
-                            filesManager.addFile(fullPath);
+                            filesManager.addFile(child);
 
                         }
                     } catch (IOException x) {
-                        // ignore to keep sample readbale
+                        // ignore to keep sample readable
                     }
                 }
                 else if(kind == ENTRY_DELETE) {
-                    if (Files.isRegularFile(name)) {
-
-                        filesManager.deleteFileFromIndex(fullPath);
-
-                    }
+                    filesManager.deleteFileFromIndex(child);
                 }
             }
 

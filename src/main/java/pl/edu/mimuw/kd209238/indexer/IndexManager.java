@@ -1,5 +1,8 @@
 package pl.edu.mimuw.kd209238.indexer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
@@ -19,7 +22,9 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IndexManager {
+public class IndexManager implements AutoCloseable {
+
+    private static Logger logger = LoggerFactory.getLogger(pl.edu.mimuw.kd209238.indexer.IndexManager.class);
 
     private Directory indexDir;
     private Analyzer analyzer;
@@ -52,6 +57,8 @@ public class IndexManager {
         try {
             writer.updateDocument(new Term(indexField, doc.get(indexField)), doc);
             writer.commit();
+
+            logger.info("Indexed file/dir with path: {}", doc.get(doc.get("path") == null ? "indexed_path" : "path"));
         } catch (IOException e) {
             System.err.println("Failed to index file.");
         }
@@ -62,19 +69,23 @@ public class IndexManager {
     public void deleteByField(String fld, String value) throws IOException {
         writer.deleteDocuments(new Term(fld, value));
         writer.commit();
+
+        logger.info("Deleted docs with field: {} ==> {}", fld, value);
     }
 
     public void deleteAllInDirectory(String dirPath) throws IOException {
         Term term = new Term("path", dirPath);
         writer.deleteDocuments(new PrefixQuery(term));
         writer.commit();
+
+        logger.info("Directory removed: {}", dirPath);
     }
 
+    @Override
     public void close() {
         try {
             writer.close();
         } catch (IOException e) {
-//            e.printStackTrace();
             System.err.println("The index hasn't closed properly.");
         }
     }

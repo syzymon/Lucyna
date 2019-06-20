@@ -34,15 +34,15 @@ public class DocumentExtractor {
     public Document extract(Path filePath) throws IOException, TikaException {
         String content;
 
-        try (InputStream fileStream = Files.newInputStream(filePath)) {
-            content = tika.parseToString(fileStream);
-        }
+//        try (InputStream fileStream = Files.newInputStream(filePath)) {
+//            content = tika.parseToString(fileStream);
+//        }
+        content = tika.parseToString(filePath);
 
         Document doc = new Document();
 
         String lang = detector.detect(content).getLanguage();
 
-//        System.out.println(content + " " + doc.get("lang"));
         switch (lang) {
             case "pl":
                 doc.add(new TextField("pl", content, Field.Store.YES));
@@ -54,12 +54,13 @@ public class DocumentExtractor {
                 doc.add(new TextField("no_lang", content, Field.Store.YES));
         }
 
-        // TODO: to absolute path??
         Field pathField = new TextField("path", filePath.toString(), Field.Store.YES);
         doc.add(pathField);
 
         String filename = filePath.getFileName().toString();
         doc.add(new TextField("filename", filename, Field.Store.YES));
+
+
 
         return doc;
     }

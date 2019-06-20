@@ -82,6 +82,7 @@ public class FilesManager {
 
     public void deleteFileFromIndex(Path file) {
         try {
+//            System.err.println(file);
             index.deleteByField("path", file.toString());
         } catch (IOException e) {
             e.printStackTrace();
