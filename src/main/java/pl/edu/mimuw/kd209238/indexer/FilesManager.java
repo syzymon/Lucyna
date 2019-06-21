@@ -23,7 +23,7 @@ public class FilesManager {
             try {
                 dirPath = new File(dirPath).getCanonicalPath();
             } catch (IOException e) {
-                // TODO exit code 1
+                System.err.println("File is not accessible, cannot perform operation.");
                 index.close();
                 System.exit(1);
             }
@@ -85,7 +85,7 @@ public class FilesManager {
 //            System.err.println(file);
             index.deleteByField("path", file.toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Cannot delete file from index.");
         }
     }
 
@@ -103,7 +103,7 @@ public class FilesManager {
                 singleVisit(path, visitor);
 
         } catch (IOException e) {
-
+            System.err.println("Couldn't go through file directory.");
         }
     }
 
@@ -113,10 +113,10 @@ public class FilesManager {
 
     private class AddingVisitor extends SimpleFileVisitor<Path> {
         @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
             try {
                 index.addDocument(extractor.extract(file), "path");
-            } catch (TikaException e) {
+            } catch (TikaException | IOException e) {
                 //cannot read content so we ignore this file and continue
                 return FileVisitResult.CONTINUE;
             }

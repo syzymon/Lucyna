@@ -21,7 +21,7 @@ public class CLI {
     private static final Path INDEX_PATH =
             Paths.get("/home/syzymon/Pulpit/java/PO_2/Lucyna/src/test/resources/index");
 
-    public static String executeCommand(String[] args) {
+    private static String executeCommand(String[] args) {
         String cmd_name = args[0], dir_name = null;
         if (args.length > 1)
             dir_name = args[1];

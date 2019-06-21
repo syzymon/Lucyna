@@ -1,6 +1,7 @@
 package indexer;
 
 import org.apache.lucene.document.Document;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.tika.exception.TikaException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,7 +61,7 @@ public class DocumentExtractorTest {
     }
 
     @Test
-    void testSearch() throws IOException {
+    void testSearch() throws IOException, ParseException {
         final String pathToAdd = "/home/syzymon/Pulpit/java/PO_2/Lucyna/src/test/resources/easy_tests";
         fm.performOperation("--add", pathToAdd);
 

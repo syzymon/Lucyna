@@ -2,24 +2,25 @@ package pl.edu.mimuw.kd209238.searcher;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
-import org.apache.lucene.search.highlight.*;
 import org.apache.lucene.search.uhighlight.DefaultPassageFormatter;
-import org.apache.lucene.search.uhighlight.Passage;
 import org.apache.lucene.search.uhighlight.PassageFormatter;
 import org.apache.lucene.search.uhighlight.UnifiedHighlighter;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.util.QueryBuilder;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import static pl.edu.mimuw.kd209238.common.IndexUtils.analyzerFactory;
-import static pl.edu.mimuw.kd209238.common.IndexUtils.openIndexDirectory;
+import static pl.edu.mimuw.kd209238.common.IndexUtils.*;
 
 public class Searcher {
 
@@ -31,6 +32,7 @@ public class Searcher {
     private int limit;
     private boolean color;
     private String queryMode;
+    private HashMap<String, Analyzer> queryAnalyzerMap;
 
     private final String ANSI_BOLD = "\u001b[1m";
     private final String ANSI_RED = "\u001B[31m";
@@ -47,12 +49,16 @@ public class Searcher {
         setLimit(0);
         color = false;
         queryMode = "term";
+        queryAnalyzerMap = generateQueryAnalyzers();
     }
 
-    //    private String color(String s) {
-//        return ANSI_RED + s + ANSI_RESET;
-//    }
-//
+
+/*
+    private String color(String s) {
+        return ANSI_RED + s + ANSI_RESET;
+    }
+*/
+
     private String bold(String s) {
         return ANSI_BOLD + s + ANSI_RESET;
     }
@@ -60,26 +66,51 @@ public class Searcher {
     public String query(String queryStr) throws IOException {
         Query q = queryFactory(queryStr);
 
-//        String result = "";
         try (IndexReader reader = DirectoryReader.open(indexDir)) {
             IndexSearcher searcher = new IndexSearcher(reader);
 
             TopDocs hits = searcher.search(q, limit);
 
-            return getResultwithContext(q, hits);
+            return getResultWithContext(q, hits);
         }
     }
 
-    private Query queryFactory(String queryStr) {
-        Query q = null;
+    private Query queryFactory(String queryStr) throws IOException {
+        Analyzer analyzer = queryAnalyzerMap.get(lang);
+
         switch (queryMode) {
             case "term": {
-                q = new TermQuery(new Term(lang, queryStr));
+                queryStr = analyzeQueryStr(queryStr, analyzer);
+
+                return new TermQuery(new Term(lang, queryStr));
+            }
+            case "phrase": {
+                QueryBuilder builder = new QueryBuilder(analyzer);
+
+                return builder.createPhraseQuery(lang, queryStr);
+            }
+            case "fuzzy": {
+                queryStr = analyzeQueryStr(queryStr, analyzer);
+
+                return new FuzzyQuery(new Term(lang, queryStr));
             }
             default:
                 break;
         }
-        return q;
+        return null;
+    }
+
+    private String analyzeQueryStr(String queryStr, Analyzer analyzer) throws IOException {
+        List<String> result = new ArrayList<>();
+        try (TokenStream tokenStream = analyzer.tokenStream(lang, queryStr)) {
+            CharTermAttribute attr = tokenStream.addAttribute(CharTermAttribute.class);
+            tokenStream.reset();
+            while (tokenStream.incrementToken()) {
+                result.add(attr.toString());
+            }
+        }
+
+        return String.join(" ", result);
     }
 
     private PassageFormatter formatterFactory() {
@@ -89,19 +120,10 @@ public class Searcher {
         return new DefaultPassageFormatter(preTag, ANSI_RESET, ELLIPSIS, false);
     }
 
-    private String getResultwithContext(Query query, TopDocs hits) throws IOException {
+    private String getResultWithContext(Query query, TopDocs hits) throws IOException {
         try (IndexReader reader = DirectoryReader.open(indexDir)) {
             IndexSearcher searcher = new IndexSearcher(reader);
 
-/*            Formatter formatter = (s, group) -> {
-                if (group.getTotalScore() == 0)
-                    return s;
-                String result = bold(s);
-                if (color) result = color(result);
-                return result;
-            };*/
-
-//            QueryScorer scorer = new QueryScorer(query);
             PassageFormatter formatter = formatterFactory();
 
             UnifiedHighlighter highlighter = new UnifiedHighlighter(searcher, analyzer);
@@ -118,17 +140,15 @@ public class Searcher {
                 result.append(bold(document.get("path")));
                 result.append('\n');
 
-//                String text = document.get(lang);
-//                Analyzer analyzer = new StandardAnalyzer();
-//                TokenStream stream =
-//                        TokenSources.getTokenStream("c", null, text, analyzer, highlighter.getMaxDocCharsToAnalyze());
-                TopDocs docHits = new TopDocs(new TotalHits(1, hits.totalHits.relation) , new ScoreDoc[] {sd});
+                if (details) {
+                    TopDocs docHits = new TopDocs(new TotalHits(1, hits.totalHits.relation), new ScoreDoc[]{sd});
 
-                String[] frags = highlighter.highlight(lang, query, docHits, 10);
-//                String[] frags = highlighter.getBestFragments(stream, text, 10);
+                    String[] frags = highlighter.highlight(lang, query, docHits, 10);
 
-                for (String frag : frags) {
-                    result.append(frag);
+                    for (String frag : frags) {
+                        result.append(frag);
+                    }
+                    result.append('\n');
                 }
             }
 //            System.err.println(result);

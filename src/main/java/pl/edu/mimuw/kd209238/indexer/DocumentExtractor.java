@@ -2,16 +2,13 @@ package pl.edu.mimuw.kd209238.indexer;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.langdetect.OptimaizeLangDetector;
 import org.apache.tika.language.detect.LanguageDetector;
-import org.apache.tika.language.detect.LanguageResult;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class DocumentExtractor {
@@ -34,9 +31,6 @@ public class DocumentExtractor {
     public Document extract(Path filePath) throws IOException, TikaException {
         String content;
 
-//        try (InputStream fileStream = Files.newInputStream(filePath)) {
-//            content = tika.parseToString(fileStream);
-//        }
         content = tika.parseToString(filePath);
 
         Document doc = new Document();
@@ -59,8 +53,6 @@ public class DocumentExtractor {
 
         String filename = filePath.getFileName().toString();
         doc.add(new TextField("filename", filename, Field.Store.YES));
-
-
 
         return doc;
     }

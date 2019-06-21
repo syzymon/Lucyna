@@ -32,4 +32,12 @@ public class IndexUtils {
 
         return new PerFieldAnalyzerWrapper(new StandardAnalyzer(), analyzerMap);
     }
+
+    public static HashMap<String, Analyzer> generateQueryAnalyzers() {
+        HashMap<String, Analyzer> queryAnalyzerMap = new HashMap<>();
+
+        queryAnalyzerMap.put("pl", new PolishAnalyzer());
+        queryAnalyzerMap.put("en", new EnglishAnalyzer());
+        return queryAnalyzerMap;
+    }
 }

@@ -30,15 +30,10 @@ public class Watcher {
         this.filesManager = fm;
     }
 
-    public void initialize(){
-        try {
-            String[] watchList = filesManager.getWatchedList();
-            for (String dir : watchList) {
-                registerAll(Paths.get(dir));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            //TODO if watched is not accessible, we should end program!
+    public void initialize() throws IOException {
+        String[] watchList = filesManager.getWatchedList();
+        for (String dir : watchList) {
+            registerAll(Paths.get(dir));
         }
     }
 
@@ -84,7 +79,7 @@ public class Watcher {
      * Process all events for keys queued to the watcher
      */
     public void processEvents() {
-        while(true) {
+        while (true) {
             // wait for key to be signalled
             WatchKey key;
             try {
@@ -128,8 +123,7 @@ public class Watcher {
                     } catch (IOException x) {
                         // ignore to keep sample readable
                     }
-                }
-                else if(kind == ENTRY_DELETE) {
+                } else if (kind == ENTRY_DELETE) {
                     filesManager.deleteFileFromIndex(child);
                 }
             }

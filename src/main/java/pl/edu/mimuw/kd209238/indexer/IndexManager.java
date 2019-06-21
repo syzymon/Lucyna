@@ -81,7 +81,7 @@ public class IndexManager implements AutoCloseable {
         }
     }
 
-    public String searchIndex(String inField, String queryString) {
+    public String searchIndex(String inField, String queryString) throws IOException, ParseException {
         try (IndexReader reader = DirectoryReader.open(writer)) {
             Query query = new QueryParser(inField, analyzer).parse(queryString);
 
@@ -90,11 +90,7 @@ public class IndexManager implements AutoCloseable {
 
 //            System.out.println(topDocs.totalHits);
             return topDocs.totalHits.toString();
-        } catch (ParseException e) {
-        } catch (IOException e) {
-
         }
-        return "";
     }
 
     public int documentsCount() {
