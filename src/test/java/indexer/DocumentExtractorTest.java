@@ -41,6 +41,7 @@ public class DocumentExtractorTest {
         ext = new DocumentExtractor();
         im = new IndexManager(Paths.get("/home/syzymon/Pulpit/java/PO_2/Lucyna/src/test/resources/index"));
         fm = new FilesManager(ext, im);
+        im.clean();
     }
 
     @AfterEach

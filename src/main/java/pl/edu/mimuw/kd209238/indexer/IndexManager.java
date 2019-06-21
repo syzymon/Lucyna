@@ -4,23 +4,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.KeywordAnalyzer;
-import org.apache.lucene.analysis.en.EnglishAnalyzer;
-import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.pl.PolishAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+
+import static pl.edu.mimuw.kd209238.common.IndexUtils.analyzerFactory;
+import static pl.edu.mimuw.kd209238.common.IndexUtils.openIndexDirectory;
 
 public class IndexManager implements AutoCloseable {
 
@@ -31,23 +26,10 @@ public class IndexManager implements AutoCloseable {
     private IndexWriterConfig iwc;
     private IndexWriter writer;
 
-    private Analyzer generateAnalyzer() {
-        Map<String, Analyzer> analyzerMap = new HashMap<>();
-
-        analyzerMap.put("path", new KeywordAnalyzer());
-        analyzerMap.put("filename", new KeywordAnalyzer());
-        analyzerMap.put("pl", new PolishAnalyzer());
-        analyzerMap.put("en", new EnglishAnalyzer());
-        analyzerMap.put("no_lang", new StandardAnalyzer());
-
-        analyzerMap.put("indexed_path", new KeywordAnalyzer());
-
-        return new PerFieldAnalyzerWrapper(new StandardAnalyzer(), analyzerMap);
-    }
-
     public IndexManager(Path indexPath) throws IOException {
-        indexDir = FSDirectory.open(indexPath);
-        analyzer = generateAnalyzer();
+        indexDir = openIndexDirectory(indexPath);
+        analyzer = analyzerFactory();
+
         iwc = new IndexWriterConfig(analyzer);
         iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
         writer = new IndexWriter(indexDir, iwc);
@@ -106,7 +88,7 @@ public class IndexManager implements AutoCloseable {
             IndexSearcher searcher = new IndexSearcher(reader);
             TopDocs topDocs = searcher.search(query, Integer.MAX_VALUE);
 
-            System.out.println(topDocs.totalHits);
+//            System.out.println(topDocs.totalHits);
             return topDocs.totalHits.toString();
         } catch (ParseException e) {
         } catch (IOException e) {

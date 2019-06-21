@@ -114,10 +114,6 @@ public class FilesManager {
     private class AddingVisitor extends SimpleFileVisitor<Path> {
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-            //here we try to parse the file
-            // TODO: do not visit symbolic links
-            //Open file and extract by extractor, get result with all useful information
-            //Useful info:
             try {
                 index.addDocument(extractor.extract(file), "path");
             } catch (TikaException e) {
