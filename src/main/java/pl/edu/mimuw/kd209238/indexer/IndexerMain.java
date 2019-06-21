@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import static pl.edu.mimuw.kd209238.common.ConfigConstants.INDEX_PATH;
 
-public class Main {
+public class IndexerMain {
 
     public static void main(String[] args) {
         try (IndexManager index = new IndexManager(INDEX_PATH)) {
@@ -16,7 +16,7 @@ public class Main {
                 String dir_name = args.length > 1 ? args[1] : "";
                 String result = files.performOperation(cmd_name, dir_name);
 
-                if(!result.isEmpty())
+                if (!result.isEmpty())
                     System.out.println(result);
             } else {
                 Watcher w = new Watcher(files);

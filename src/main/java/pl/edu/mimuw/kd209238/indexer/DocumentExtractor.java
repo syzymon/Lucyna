@@ -4,9 +4,11 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
 import org.apache.tika.Tika;
+import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.langdetect.OptimaizeLangDetector;
 import org.apache.tika.language.detect.LanguageDetector;
+import org.xml.sax.SAXException;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -16,7 +18,12 @@ public class DocumentExtractor {
     private LanguageDetector detector;
 
     public DocumentExtractor() throws IOException {
-        tika = new Tika();
+        try {
+            InputStream stream = this.getClass().getClassLoader().getResourceAsStream("tika-config.xml");
+            tika = new Tika(new TikaConfig(stream));
+        } catch (TikaException | SAXException e) {
+            tika = new Tika();
+        }
         detector = new OptimaizeLangDetector();
         detector.loadModels();
     }

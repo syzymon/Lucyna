@@ -7,17 +7,12 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pl.edu.mimuw.kd209238.example.JLineExample;
 
 import java.io.IOException;
 
 import static pl.edu.mimuw.kd209238.common.ConfigConstants.INDEX_PATH;
 
-public class CLI {
-    private static Logger logger = LoggerFactory.getLogger(JLineExample.class);
-
+public class SearcherMain {
     private static Searcher searcher;
 
     private static String executeCommand(String args) {
@@ -95,7 +90,7 @@ public class CLI {
                 }
             }
         } catch (IOException e) {
-            logger.error("An error has occured", e);
+            System.err.println("An error has occured: " + e);
         }
     }
 }
