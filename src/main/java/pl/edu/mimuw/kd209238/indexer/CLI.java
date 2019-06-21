@@ -38,7 +38,7 @@ public class CLI {
                 w.processEvents();
             }
         } catch (IOException e) {
-            // TODO: break program?
+            System.err.println("No access to index.");
         }
         return "";
     }
@@ -65,11 +65,9 @@ public class CLI {
 
                     String cmdResult = executeCommand(input_args);
 
-                    if(!cmdResult.isEmpty())
+                    if (!cmdResult.isEmpty())
                         terminal.writer().println(cmdResult);
-                } catch (UserInterruptException e) {
-                    break;
-                } catch (EndOfFileException e) {
+                } catch (UserInterruptException | EndOfFileException e) {
                     break;
                 }
             }

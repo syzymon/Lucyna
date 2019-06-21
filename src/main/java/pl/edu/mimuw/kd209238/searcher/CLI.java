@@ -15,11 +15,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static pl.edu.mimuw.kd209238.common.ConfigConstants.INDEX_PATH;
+
 public class CLI {
     private static Logger logger = LoggerFactory.getLogger(JLineExample.class);
-
-    private static final Path INDEX_PATH =
-            Paths.get("/home/syzymon/Pulpit/java/PO_2/Lucyna/src/test/resources/index");
 
     private static Searcher searcher;
 

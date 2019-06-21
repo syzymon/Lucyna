@@ -2,6 +2,7 @@ package pl.edu.mimuw.kd209238.searcher;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -99,6 +100,7 @@ public class Searcher {
         }
         return null;
     }
+
 
     private String analyzeQueryStr(String queryStr, Analyzer analyzer) throws IOException {
         List<String> result = new ArrayList<>();

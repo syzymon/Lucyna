@@ -23,7 +23,7 @@ public class IndexUtils {
         Map<String, Analyzer> analyzerMap = new HashMap<>();
 
         analyzerMap.put("path", new KeywordAnalyzer());
-        analyzerMap.put("filename", new KeywordAnalyzer());
+        analyzerMap.put("filename", new StandardAnalyzer());
         analyzerMap.put("pl", new PolishAnalyzer());
         analyzerMap.put("en", new EnglishAnalyzer());
         analyzerMap.put("no_lang", new StandardAnalyzer());

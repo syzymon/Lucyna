@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static pl.edu.mimuw.kd209238.indexer.DocumentExtractor.*;
 
 public class DocumentExtractorTest {
-    @Test
+    /*@Test
     void testLangs() throws IOException, TikaException {
         DocumentExtractor ext = new DocumentExtractor();
         Path blep = Paths.get("/home/syzymon/Pulpit/java/PO_2/Lucyna/src/test/resources/rblarba-pl.pdf");
@@ -92,5 +92,5 @@ public class DocumentExtractorTest {
         Watcher w = new Watcher(fm);
         w.initialize();
         w.processEvents();
-    }
+    }*/
 }
