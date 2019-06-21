@@ -2,7 +2,6 @@ package pl.edu.mimuw.kd209238.searcher;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -52,13 +51,6 @@ public class Searcher {
         queryMode = "term";
         queryAnalyzerMap = generateQueryAnalyzers();
     }
-
-
-/*
-    private String color(String s) {
-        return ANSI_RED + s + ANSI_RESET;
-    }
-*/
 
     private String bold(String s) {
         return ANSI_BOLD + s + ANSI_RESET;
@@ -153,7 +145,6 @@ public class Searcher {
                     result.append('\n');
                 }
             }
-//            System.err.println(result);
             return result.toString().trim();
         }
     }

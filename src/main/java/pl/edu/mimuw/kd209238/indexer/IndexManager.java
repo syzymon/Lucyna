@@ -6,8 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.*;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 
@@ -44,8 +42,6 @@ public class IndexManager implements AutoCloseable {
         } catch (IOException e) {
             System.err.println("Failed to index file.");
         }
-//        if(indexField.equals("indexed_path"))
-//            System.out.println(doc.get("indexed_path"));
     }
 
     public void deleteByField(String fld, String value) throws IOException {
@@ -63,65 +59,6 @@ public class IndexManager implements AutoCloseable {
         logger.info("Directory removed: {}", dirPath);
     }
 
-    @Override
-    public void close() {
-        try {
-            writer.close();
-        } catch (IOException e) {
-            System.err.println("The index hasn't closed properly.");
-        }
-    }
-
-    public void clean() {
-        try {
-            writer.deleteAll();
-            writer.commit();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String searchIndex(String inField, String queryString) throws IOException, ParseException {
-        try (IndexReader reader = DirectoryReader.open(writer)) {
-            Query query = new QueryParser(inField, analyzer).parse(queryString);
-
-            IndexSearcher searcher = new IndexSearcher(reader);
-            TopDocs topDocs = searcher.search(query, Integer.MAX_VALUE);
-
-//            System.out.println(topDocs.totalHits);
-            return topDocs.totalHits.toString();
-        }
-    }
-
-    public int documentsCount() {
-        int result = -1;
-        try (IndexReader reader = DirectoryReader.open(writer)) {
-            result = reader.numDocs();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    public void dbg() throws IOException {
-        try (IndexReader reader = DirectoryReader.open(writer)) {
-
-            Query query = new MatchAllDocsQuery();
-
-            IndexSearcher searcher = new IndexSearcher(reader);
-
-            TopDocs docs = searcher.search(query, Integer.MAX_VALUE);
-
-//            System.out.println(docs.totalHits);
-
-            for (ScoreDoc doc : docs.scoreDocs) {
-                Document debugDoc = searcher.doc(doc.doc);
-
-                System.out.println(debugDoc);
-            }
-        }
-    }
-
     public String[] getWatchedDirectories() throws IOException {
         String[] result;
 
@@ -133,7 +70,6 @@ public class IndexManager implements AutoCloseable {
 
             TopDocs docs = searcher.search(query, Integer.MAX_VALUE);
 
-//            System.out.println(docs.totalHits);
             result = new String[docs.scoreDocs.length];
             int idx = 0;
 
@@ -145,5 +81,23 @@ public class IndexManager implements AutoCloseable {
         }
 
         return result;
+    }
+
+    public void clean() {
+        try {
+            writer.deleteAll();
+            writer.commit();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void close() {
+        try {
+            writer.close();
+        } catch (IOException e) {
+            System.err.println("The index hasn't closed properly.");
+        }
     }
 }

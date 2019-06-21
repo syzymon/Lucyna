@@ -5,6 +5,6 @@ import java.nio.file.Paths;
 
 public class ConfigConstants {
     public static final Path INDEX_PATH =
-            Paths.get("/home/syzymon/Pulpit/java/PO_2/Lucyna/src/test/resources/index");
-
+//            Paths.get("/home/syzymon/Pulpit/java/PO_2/Lucyna/src/test/resources/index");
+            Paths.get(System.getProperty("user.home"), ".index");
 }

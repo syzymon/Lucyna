@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import pl.edu.mimuw.kd209238.example.JLineExample;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static pl.edu.mimuw.kd209238.common.ConfigConstants.INDEX_PATH;
 
@@ -92,9 +90,6 @@ public class CLI {
                     if (!cmdResult.isEmpty())
                         terminal.writer().println(cmdResult);
 
-//                    terminal.writer().println("\u001b[1m\u001B[31mRed Bold\u001B[0m\u001B[0m");
-//                    if(!cmdResult.isEmpty())
-//                        terminal.writer().println(cmdResult);
                 } catch (UserInterruptException | EndOfFileException e) {
                     break;
                 }
