@@ -1,4 +1,4 @@
-package pl.edu.mimuw.kd209238.searcher;
+package searcher;
 
 import org.jline.builtins.Completers;
 import org.jline.reader.EndOfFileException;
@@ -10,7 +10,7 @@ import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
 
-import static pl.edu.mimuw.kd209238.common.ConfigConstants.INDEX_PATH;
+import static common.ConfigConstants.INDEX_PATH;
 
 public class SearcherMain {
     private static Searcher searcher;
@@ -41,7 +41,7 @@ public class SearcherMain {
                 searcher.setDetails(arg);
                 break;
             case "%limit":
-                searcher.setLimit(Integer.valueOf(arg));
+                searcher.setLimit(Integer.parseInt(arg));
                 break;
             case "%color":
                 searcher.setColor(arg);

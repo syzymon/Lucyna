@@ -1,4 +1,4 @@
-package pl.edu.mimuw.kd209238.indexer;
+package indexer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,19 +12,19 @@ import org.apache.lucene.store.Directory;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static pl.edu.mimuw.kd209238.common.IndexUtils.analyzerFactory;
-import static pl.edu.mimuw.kd209238.common.IndexUtils.openIndexDirectory;
+import static common.IndexUtils.analyzerFactory;
+import static common.IndexUtils.openIndexDirectory;
 
 public class IndexManager implements AutoCloseable {
 
-    private static Logger logger = LoggerFactory.getLogger(pl.edu.mimuw.kd209238.indexer.IndexManager.class);
+    private static Logger logger = LoggerFactory.getLogger(indexer.IndexManager.class);
 
     private Directory indexDir;
     private Analyzer analyzer;
     private IndexWriterConfig iwc;
     private IndexWriter writer;
 
-    public IndexManager(Path indexPath) throws IOException {
+    IndexManager(Path indexPath) throws IOException {
         indexDir = openIndexDirectory(indexPath);
         analyzer = analyzerFactory();
 
@@ -33,7 +33,7 @@ public class IndexManager implements AutoCloseable {
         writer = new IndexWriter(indexDir, iwc);
     }
 
-    public void addDocument(Document doc, String indexField) {
+    void addDocument(Document doc, String indexField) {
         try {
             writer.updateDocument(new Term(indexField, doc.get(indexField)), doc);
             writer.commit();
@@ -44,14 +44,14 @@ public class IndexManager implements AutoCloseable {
         }
     }
 
-    public void deleteByField(String fld, String value) throws IOException {
+    void deleteByField(String fld, String value) throws IOException {
         writer.deleteDocuments(new Term(fld, value));
         writer.commit();
 
         logger.info("Deleted docs with field: {} ==> {}", fld, value);
     }
 
-    public void deleteAllInDirectory(String dirPath) throws IOException {
+    void deleteAllInDirectory(String dirPath) throws IOException {
         Term term = new Term("path", dirPath);
         writer.deleteDocuments(new PrefixQuery(term));
         writer.commit();
@@ -59,7 +59,7 @@ public class IndexManager implements AutoCloseable {
         logger.info("Directory removed: {}", dirPath);
     }
 
-    public String[] getWatchedDirectories() throws IOException {
+    String[] getWatchedDirectories() throws IOException {
         String[] result;
 
         try (IndexReader reader = DirectoryReader.open(writer)) {
@@ -83,7 +83,7 @@ public class IndexManager implements AutoCloseable {
         return result;
     }
 
-    public void clean() {
+    void clean() {
         try {
             writer.deleteAll();
             writer.commit();

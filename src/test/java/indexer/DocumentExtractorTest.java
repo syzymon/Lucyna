@@ -1,25 +1,8 @@
 package indexer;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.tika.exception.TikaException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import pl.edu.mimuw.kd209238.indexer.DocumentExtractor;
-import pl.edu.mimuw.kd209238.indexer.FilesManager;
-import pl.edu.mimuw.kd209238.indexer.IndexManager;
-import pl.edu.mimuw.kd209238.indexer.Watcher;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static pl.edu.mimuw.kd209238.indexer.DocumentExtractor.*;
 
 public class DocumentExtractorTest {
     /*@Test

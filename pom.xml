@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>ExampleProject</groupId>
-	<artifactId>ExampleProject</artifactId>
-	<version>1.1.0</version>
+	<groupId>Lucyna</groupId>
+	<artifactId>Lucyna</artifactId>
+	<version>1.0.0</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -71,7 +71,7 @@
 							<appendAssemblyId>false</appendAssemblyId>
 							<archive>
 								<manifest>
-									<mainClass>pl.edu.mimuw.kd209238.indexer.IndexerMain</mainClass>
+									<mainClass>indexer.IndexerMain</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
@@ -90,7 +90,7 @@
 							<appendAssemblyId>false</appendAssemblyId>
 							<archive>
 								<manifest>
-									<mainClass>pl.edu.mimuw.kd209238.searcher.SearcherMain</mainClass>
+									<mainClass>searcher.SearcherMain</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
@@ -245,13 +245,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>pl.edu.mimuw.kd209238</groupId>
-			<artifactId>dummy</artifactId>
-			<version>0.0.1</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/dummy-0.0.1.jar</systemPath>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
 		<dependency>
 			<groupId>org.assertj</groupId>

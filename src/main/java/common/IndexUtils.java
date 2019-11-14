@@ -1,4 +1,4 @@
-package pl.edu.mimuw.kd209238.common;
+package common;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;

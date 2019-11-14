@@ -1,8 +1,8 @@
-package pl.edu.mimuw.kd209238.indexer;
+package indexer;
 
 import java.io.IOException;
 
-import static pl.edu.mimuw.kd209238.common.ConfigConstants.INDEX_PATH;
+import static common.ConfigConstants.INDEX_PATH;
 
 public class IndexerMain {
 

@@ -1,4 +1,4 @@
-package pl.edu.mimuw.kd209238.indexer;
+package indexer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +12,9 @@ import java.util.Map;
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static java.nio.file.StandardWatchEventKinds.*;
 
-public class Watcher {
+class Watcher {
 
-    private static Logger logger = LoggerFactory.getLogger(pl.edu.mimuw.kd209238.indexer.Watcher.class);
+    private static Logger logger = LoggerFactory.getLogger(indexer.Watcher.class);
 
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
@@ -23,14 +23,14 @@ public class Watcher {
     /**
      * Creates a WatchService and registers the given directory
      */
-    public Watcher(FilesManager fm) throws IOException {
+    Watcher(FilesManager fm) throws IOException {
         this.watcher = FileSystems.getDefault()
                 .newWatchService();
         this.keys = new HashMap<>();
         this.filesManager = fm;
     }
 
-    public void initialize() throws IOException {
+    void initialize() throws IOException {
         String[] watchList = filesManager.getWatchedList();
         for (String dir : watchList) {
             registerAll(Paths.get(dir));
@@ -78,7 +78,7 @@ public class Watcher {
     /**
      * Process all events for keys queued to the watcher
      */
-    public void processEvents() {
+    void processEvents() {
         while (true) {
             // wait for key to be signalled
             WatchKey key;

@@ -1,4 +1,4 @@
-package pl.edu.mimuw.kd209238.searcher;
+package searcher;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static pl.edu.mimuw.kd209238.common.IndexUtils.*;
+import static common.IndexUtils.*;
 
 public class Searcher {
 
@@ -35,9 +35,7 @@ public class Searcher {
     private HashMap<String, Analyzer> queryAnalyzerMap;
 
     private final String ANSI_BOLD = "\u001b[1m";
-    private final String ANSI_RED = "\u001B[31m";
     private final String ANSI_RESET = "\u001B[0m";
-    private final String ELLIPSIS = "... ";
 
     public Searcher(Path indexPath) throws IOException {
         indexDir = openIndexDirectory(indexPath);
@@ -56,7 +54,7 @@ public class Searcher {
         return ANSI_BOLD + s + ANSI_RESET;
     }
 
-    public String query(String queryStr) throws IOException {
+    String query(String queryStr) throws IOException {
         Query q = queryFactory(queryStr);
 
         try (IndexReader reader = DirectoryReader.open(indexDir)) {
@@ -109,8 +107,10 @@ public class Searcher {
 
     private PassageFormatter formatterFactory() {
         String preTag = ANSI_BOLD;
+        String ANSI_RED = "\u001B[31m";
         if (color)
             preTag += ANSI_RED;
+        String ELLIPSIS = "... ";
         return new DefaultPassageFormatter(preTag, ANSI_RESET, ELLIPSIS, false);
     }
 
@@ -149,27 +149,27 @@ public class Searcher {
         }
     }
 
-    public void setLang(String lang) {
+    void setLang(String lang) {
         this.lang = lang;
     }
 
-    public void setDetails(String details) {
+    void setDetails(String details) {
         this.details = details.equals("on");
     }
 
-    public void setLimit(int limit) {
+    void setLimit(int limit) {
         if (limit == 0)
             this.limit = Integer.MAX_VALUE;
         else
             this.limit = limit;
     }
 
-    public void setColor(String color) {
+    void setColor(String color) {
         this.color = color.equals("on");
     }
 
 
-    public void setQueryMode(String queryMode) {
+    void setQueryMode(String queryMode) {
         this.queryMode = queryMode;
     }
 }

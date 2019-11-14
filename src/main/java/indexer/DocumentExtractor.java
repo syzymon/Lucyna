@@ -1,4 +1,4 @@
-package pl.edu.mimuw.kd209238.indexer;
+package indexer;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -10,16 +10,18 @@ import org.apache.tika.langdetect.OptimaizeLangDetector;
 import org.apache.tika.language.detect.LanguageDetector;
 import org.xml.sax.SAXException;
 
+import common.ConfigConstants;
+
 import java.io.*;
 import java.nio.file.Path;
 
-public class DocumentExtractor {
+class DocumentExtractor {
     private Tika tika;
     private LanguageDetector detector;
 
-    public DocumentExtractor() throws IOException {
+    DocumentExtractor() throws IOException {
         try {
-            InputStream stream = this.getClass().getClassLoader().getResourceAsStream("tika-config.xml");
+            InputStream stream = this.getClass().getClassLoader().getResourceAsStream(ConfigConstants.TIKA_CONFIG);
             tika = new Tika(new TikaConfig(stream));
         } catch (TikaException | SAXException e) {
             tika = new Tika();
@@ -35,7 +37,7 @@ public class DocumentExtractor {
      * content: tokenized content of file
      * lang: language of file
      */
-    public Document extract(Path filePath) throws IOException, TikaException {
+    Document extract(Path filePath) throws IOException, TikaException {
         String content;
 
         content = tika.parseToString(filePath);
@@ -64,7 +66,7 @@ public class DocumentExtractor {
         return doc;
     }
 
-    public Document generatePathDocument(String dirPath) {
+    Document generatePathDocument(String dirPath) {
         Document doc = new Document();
 
         doc.add(new TextField("indexed_path", dirPath, Field.Store.YES));
