@@ -8,7 +8,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<tika.version>1.21</tika.version>
+		<tika.version>1.24.1</tika.version>
 		<lucene.version>8.1.0</lucene.version>
 		<slf4j.version>1.7.26</slf4j.version>
 		<jline.version>3.11.0</jline.version>
